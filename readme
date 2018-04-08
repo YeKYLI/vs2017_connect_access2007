@@ -1,0 +1,47 @@
+1.添加该dll库，在该操作的文件上添加下列代码，出现错误后，从新编译一次就没问题了
+#import "c:\program files\common files\system\ado\msado15.dll" no_namespace rename("EOF", "adoEOF")
+
+2.连接
+//https://www.cnblogs.com/c1230v/articles/1402697.html，
+	_ConnectionPtr m_pConnection;
+	HRESULT hr;
+	try
+	{
+		hr = m_pConnection.CreateInstance("ADODB.Connection");///创建Connection对象
+		if (SUCCEEDED(hr))
+		{
+			hr = m_pConnection->Open("Provider=Microsoft.ACE.OLEDB.12.0;Data Source = test.accdb","","",adModeUnknown);///连接数据库
+				//上面一句中连接字串中的Provider是针对ACCESS2007环境的，Provider=Microsoft.ACE.OLEDB.12.0
+        //对于ACCESS97需要改为：Provider=Microsoft.Jet.OLEDB.3.51;
+        //对于access2000在网上搜一下就行了
+		}
+	}
+	catch (_com_error e)///捕捉异常
+	{
+		//CString errormessage;
+		//errormessage.Format("连接数据库失败!\r\n错误信息:%s", e.ErrorMessage());
+		AfxMessageBox(e.Description());///显示错误信息
+	}
+  
+  3.对数据库操作，具体哪个表可以修改30行(EECT * FROM test")中的test;修改哪条记录时
+  //https://www.cnblogs.com/c1230v/articles/1402697.html，
+  _RecordsetPtr m_pRecordset;
+	m_pRecordset.CreateInstance("ADODB.Recordset");
+	m_pRecordset->Open("SELECT * FROM test",
+		m_pConnection.GetInterfacePtr(),//或使用_variant_t((IDispatch*)theApp.m_pConnection,true),，但需要extern声明theApp;
+		adOpenDynamic,
+		adLockOptimistic,
+		adCmdText);
+	try
+	{
+		m_pRecordset->MoveFirst();//转到第一条记录
+		m_pRecordset->Move(1);//从当前记录转移到下一条记录，如果是2就转到下两条记录
+		m_pRecordset->Delete(adAffectCurrent);
+		m_pRecordset->Update();
+	}
+	catch (_com_error error)
+	{
+		CString errorMessage;
+		//errorMessage.Format("%s", (LPTSTR)error.Description());
+		AfxMessageBox(error.Description());
+	}
