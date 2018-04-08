@@ -23,7 +23,8 @@
 		AfxMessageBox(e.Description());///显示错误信息
 	}
   
-  3.对数据库操作，具体哪个表可以修改30行(EECT * FROM test")中的test;修改哪条记录时
+  3.对数据库操作，具体哪个表可以修改30行(EECT * FROM test")中的test;修改哪条记录时先调用，先m_pRecordset->MoveFirst();//转到第一条记录；
+  然后用m_pRecordset->Move(1);//从当前记录转移到下一条记录，如果是2就转到下两条记录
   //https://www.cnblogs.com/c1230v/articles/1402697.html，
   _RecordsetPtr m_pRecordset;
 	m_pRecordset.CreateInstance("ADODB.Recordset");
