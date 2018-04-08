@@ -1,3 +1,4 @@
+代码在主文件里
 1.添加该dll库，在该操作的文件上添加下列代码，出现错误后，从新编译一次就没问题了
 #import "c:\program files\common files\system\ado\msado15.dll" no_namespace rename("EOF", "adoEOF")
 
